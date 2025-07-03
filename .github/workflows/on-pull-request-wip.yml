@@ -1,0 +1,19 @@
+name: "Cancel PR in WIP"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PR_TITLE: ${{ github.event.pull_request.title }}
+
+jobs:
+  cancel-in-wip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel PR in WIP
+        run: node -e "process.env.PR_TITLE.startsWith('[WIP]') && process.exit(1);"

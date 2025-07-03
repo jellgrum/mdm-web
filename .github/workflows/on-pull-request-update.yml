@@ -1,0 +1,32 @@
+name: "PR check"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci --no-fund
+
+  check:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint
+        run: npm run lint
+
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: npm run build

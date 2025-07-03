@@ -1,0 +1,18 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-empty-object-type": [2, {
+      "allowInterfaces": "with-single-extends"
+    }]
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "root": true,
+  "ignorePatterns": ["src/components/ui/**/*.ts", "src/components/ui/**/*.tsx"]
+}
