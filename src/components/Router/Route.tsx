@@ -1,4 +1,3 @@
-// todo: specify render property type
 interface RouteProps {
     path: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

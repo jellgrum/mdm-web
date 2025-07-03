@@ -30,7 +30,6 @@ const getLocation = (fullUrl: string) => {
     return {
         pathname: pathname === '/' ? '' : pathname,
         search,
-        // todo: extract to <Breadcrumbs /> (visible 1: text, visible > 1: links except first)
         routeName: routeName?.name || '',
     };
 };

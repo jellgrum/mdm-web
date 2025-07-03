@@ -2,7 +2,6 @@ interface Props {
     data: [];
 }
 
-// todo: map data
 export const Table = ({ data }: Props) => (
     <div className="my-6 w-full overflow-y-auto">
         {data}
