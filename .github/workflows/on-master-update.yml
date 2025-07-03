@@ -10,35 +10,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare:
+  prepare-check-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci --no-fund
-
-  check:
-    needs: prepare
-    runs-on: ubuntu-latest
-    steps:
       - name: Lint
         run: npm run lint
-
-  build:
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
       - name: Build
         run: npm run build
       - name: Upload build artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist # use correct path
+          path: ./dist
 
   deploy:
-    needs: build
+    needs: prepare-check-build
     permissions:
       pages: write
       id-token: write
