@@ -3,7 +3,7 @@ import { Device } from './Device';
 
 
 export const modules = [{
-    path: '/about',
+    path: '/',
     id: 'about',
     name: 'About the app',
     render: About,
