@@ -9,7 +9,7 @@ import { routes } from '@/routes';
 import { useAppStore } from '@/store';
 import { ScrollArea } from '@/components/ui';
 import { useCheckActiveNav } from '@/hooks';
-import { cn } from '@/utils';
+import { cn, omit } from '@/utils';
 
 import { Button, buttonVariants } from './Button';
 import { Link } from './Router';
@@ -61,7 +61,7 @@ const links: SideLink[] = routes
 const getAllLinks = (links: SideLink[], masterViews: MasterView[]) => {
     const allLinks = links.map(link => {
         if (link.id === 'masterViewList') {
-            const sub: NavLink[] = masterViews.map(({ id, title }) => ({
+            const sub = masterViews.map(({ id, title }) => ({
                 id: `${id}`,
                 title,
                 href: `/${id}`,
@@ -70,7 +70,7 @@ const getAllLinks = (links: SideLink[], masterViews: MasterView[]) => {
 
             return {
                 ...link,
-                sub: [link as NavLink, ...sub],
+                sub: [omit(link, ['icon']) as NavLink, ...sub],
             };
         }
 

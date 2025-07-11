@@ -93,3 +93,10 @@ export const getUuid = () => {
         return v.toString(16);
     });
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const omit = <T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]) => {
+    const result = { ...obj };
+    keys.forEach(key => delete result[key]);
+    return result as Omit<T, K>;
+};
