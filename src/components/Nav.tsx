@@ -1,16 +1,12 @@
-import { JSX, HTMLAttributes } from 'react';
+import { JSX, HTMLAttributes, useState, useEffect } from 'react';
 import {
-    IconBook,
     IconChevronDown,
-    IconDevicesCode,
-    IconEdit,
     IconInfoCircle,
-    IconLayoutDashboard,
     IconListDetails,
-    IconLockCode,
 } from '@tabler/icons-react';
 
-import { modules } from '@/modules';
+import { routes } from '@/routes';
+import { useAppStore } from '@/store';
 import { ScrollArea } from '@/components/ui';
 import { useCheckActiveNav } from '@/hooks';
 import { cn } from '@/utils';
@@ -33,8 +29,11 @@ import {
     TooltipTrigger,
 } from './ui';
 
+import type { MasterView } from '@/types';
+
 
 interface NavLink {
+    id: string;
     title: string;
     label?: string;
     href: string;
@@ -46,20 +45,39 @@ interface SideLink extends NavLink {
 }
 
 const moduleIcons = {
-    home: <IconLayoutDashboard size={18} />,
-    device: <IconDevicesCode size={18} />,
-    reader: <IconBook size={18} />,
-    editor: <IconEdit size={18} />,
-    mdm: <IconListDetails size={18} />,
-    crypto: <IconLockCode size={18} />,
+    masterViewList: <IconListDetails size={18} />,
     about: <IconInfoCircle size={18} />,
 };
 
-const links: SideLink[] = modules.map(({ id, path, name  }) => ({
-    title: name,
-    href: path,
-    icon: moduleIcons[id as keyof typeof moduleIcons],
-}));
+const links: SideLink[] = routes
+    .filter(({ isSidebarVisible }) => isSidebarVisible)
+    .map(({ id, path, name }) => ({
+        id,
+        title: name,
+        href: path,
+        icon: moduleIcons[id as keyof typeof moduleIcons],
+    }));
+
+const getAllLinks = (links: SideLink[], masterViews: MasterView[]) => {
+    const allLinks = links.map(link => {
+        if (link.id === 'masterViewList') {
+            const sub = masterViews.map(({ id, title }) => ({
+                title,
+                href: `/${id}`,
+                icon: null,
+            }));
+
+            return {
+                ...link,
+                sub: [link, ...sub],
+            };
+        }
+
+        return link;
+    });
+
+    return allLinks;
+};
 
 interface NavProps extends HTMLAttributes<HTMLDivElement> {
     isCollapsed: boolean;
@@ -71,6 +89,13 @@ export const Nav = ({
     className,
     closeNav,
 }: NavProps) => {
+    const { masterViews } = useAppStore();
+    const [allLinks, setAllLinks] = useState(() => getAllLinks(links, masterViews));
+
+    useEffect(() => {
+        setAllLinks(getAllLinks(links, masterViews));
+    }, [masterViews]);
+
     const renderLink = ({ sub, ...rest }: SideLink) => {
         const key = `${rest.title}-${rest.href}`;
         if (isCollapsed && sub)
@@ -102,7 +127,7 @@ export const Nav = ({
         >
             <TooltipProvider delayDuration={0}>
                 <nav className="grid gap-1 group-[[data-collapsed=true]]:justify-center">
-                    {links.map(renderLink)}
+                    {allLinks.map(renderLink)}
                 </nav>
             </TooltipProvider>
         </ScrollArea>
@@ -161,7 +186,7 @@ const NavLinkDropdown = ({ title, icon, label, sub, closeNav }: NavLinkProps) =>
             <CollapsibleTrigger
                 className={cn(
                     buttonVariants({ variant: 'ghost', size: 'sm' }),
-                    'group h-12 w-full justify-start rounded-none px-6',
+                    'group h-12 w-full justify-start rounded-none px-4',
                 )}
             >
                 <div className="mr-2">{icon}</div>

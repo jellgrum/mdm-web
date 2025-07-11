@@ -20,8 +20,6 @@ import { Layout, LayoutHeader } from './Layout';
 import { Button } from './Button';
 import { Nav } from './Nav';
 
-import logo from '@/assets/logo.svg';
-
 
 interface SidebarProps extends HTMLAttributes<HTMLElement> {
     isCollapsed: boolean;
@@ -68,28 +66,24 @@ export const Sidebar = ({
             />
 
             <Layout>
-                <LayoutHeader className="sticky top-0 px-4 py-3 shadow md:px-4 z-10">
+                <LayoutHeader className={cn('sticky top-0 px-4 py-3 shadow z-10', isCollapsed ? 'md:px-2' : 'md:px-4')}>
                     <TooltipProvider delayDuration={0}>
                         <Tooltip delayDuration={0}>
                             <TooltipTrigger asChild>
-                                <a
-                                    className={cn('flex items-center', !isCollapsed && 'gap-1')}
-                                    href="https://jellgrum.dev"
-                                    target="_blank"
-                                >
-                                    <img src={logo} className={cn('dark:invert w-5 min-w-5', isCollapsed && 'py-0.5')} alt="" />
+                                <div className="flex items-center font-medium">
+                                    <span>M<span className={cn(!isCollapsed && 'hidden')}>DM</span></span>
                                     <div className={cn(
                                         'justify-end truncate items-center gap-2',
                                         isCollapsed ? 'hidden' : 'flex',
                                     )}>
-                                        <span className="font-medium">
-                                            ellgrum.Dev{'<Unity>'}
+                                        <span>
+                                            aster Data Management
                                         </span>
                                     </div>
-                                </a>
+                                </div>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="flex items-center gap-4 hidden md:block">
-                                Developer page
+                                Master Data Management
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

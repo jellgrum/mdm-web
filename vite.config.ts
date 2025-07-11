@@ -33,7 +33,7 @@ export default defineConfig(({ command }) => {
     }
 
     return {
-        base: '/unity',
+        base: '/mdm',
         plugins,
         build: {
             sourcemap: true,

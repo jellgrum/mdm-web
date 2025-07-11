@@ -1,0 +1,1 @@
+export { DetailViewForm } from './DetailViewForm';

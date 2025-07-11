@@ -1,8 +1,9 @@
 interface RouteProps {
     path: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    render: any;
-    isExact: boolean;
+    id: string;
+    name: string;
+    render: () => JSX.Element;
+    isSidebarVisible: boolean;
 }
 
 export const Route = ({ render: Component }: RouteProps) => <Component />;

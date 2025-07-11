@@ -14,8 +14,8 @@ export const Switch = ({ children }: SwitchProps) => {
 
     const path = pathname === '' ? '/' : pathname;
     const route = children.find(({ props }) => {
-        if (props.isExact && props.path === path) return true;
-        if (!props.isExact && path.startsWith(props.path)) {
+        if (props.path === path) return true;
+        if (path.startsWith(props.path)) {
             const rest = path.replace(props.path, '');
             return rest.length === 0 || rest.startsWith('/');
         }

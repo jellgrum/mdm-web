@@ -1,7 +1,7 @@
 import { ReactElement, createContext, useState, useEffect, useCallback } from 'react';
 
 import { env } from '@/constants';
-import { modules } from '@/modules';
+import { routes } from '@/routes';
 
 
 interface RouterProps {
@@ -17,9 +17,9 @@ const getLocation = (fullUrl: string) => {
     const pathname = indexSearch === -1 ? url : url.slice(0, indexSearch);
     const search = indexSearch === -1 ? '' : url.slice(indexSearch);
 
-    const routeName = modules.find(({ path, isExact }) => {
-        if (isExact && path === (pathname || '/')) return true;
-        if (!isExact && pathname.startsWith(path)) {
+    const routeName = routes.find(({ path }) => {
+        if (path === (pathname || '/')) return true;
+        if (pathname.startsWith(path)) {
             const diff = pathname.replace(path, '');
             return diff.length === 0 || diff.startsWith('/');
         }
