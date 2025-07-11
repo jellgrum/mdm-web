@@ -37,7 +37,7 @@ interface NavLink {
     title: string;
     label?: string;
     href: string;
-    icon: JSX.Element;
+    icon: JSX.Element | null;
 }
 
 interface SideLink extends NavLink {
@@ -61,7 +61,8 @@ const links: SideLink[] = routes
 const getAllLinks = (links: SideLink[], masterViews: MasterView[]) => {
     const allLinks = links.map(link => {
         if (link.id === 'masterViewList') {
-            const sub = masterViews.map(({ id, title }) => ({
+            const sub: NavLink[] = masterViews.map(({ id, title }) => ({
+                id: `${id}`,
                 title,
                 href: `/${id}`,
                 icon: null,
@@ -69,7 +70,7 @@ const getAllLinks = (links: SideLink[], masterViews: MasterView[]) => {
 
             return {
                 ...link,
-                sub: [link, ...sub],
+                sub: [link as NavLink, ...sub],
             };
         }
 
