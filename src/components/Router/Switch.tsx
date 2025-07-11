@@ -12,18 +12,20 @@ interface SwitchProps {
 export const Switch = ({ children }: SwitchProps) => {
     const { pathname } = useRouter();
 
-    const path = pathname === '' ? '/' : pathname;
     const route = children.find(({ props }) => {
-        if (props.path === path) return true;
-        if (path.startsWith(props.path)) {
-            const rest = path.replace(props.path, '');
+        if (props.path.includes('/:'))
+            return match(props.path, pathname).matches;
+        if (props.path === pathname)
+            return true;
+        if (pathname.startsWith(props.path)) {
+            const rest = pathname.replace(props.path, '');
             return rest.length === 0 || rest.startsWith('/');
         }
-        return match(props.path, path).matches;
+        return false;
     });
 
     if (!route) return <NotFound />;
 
     const Component = route.props.render;
-    return <Component {...match(route?.props.path, path).params} />;
+    return <Component {...match(route.props.path, pathname).params} />;
 };

@@ -1,4 +1,10 @@
-import { ReactElement, createContext, useState, useEffect, useCallback } from 'react';
+import {
+    ReactElement,
+    createContext,
+    useState,
+    useCallback,
+} from 'react';
+import { match } from 'node-match-path';
 
 import { env } from '@/constants';
 import { routes } from '@/routes';
@@ -12,41 +18,37 @@ const { basePath } = env;
 
 const getLocation = (fullUrl: string) => {
     const url = fullUrl.replace(basePath, '');
-    const indexSearch = url.indexOf('?');
-
-    const pathname = indexSearch === -1 ? url : url.slice(0, indexSearch);
-    const search = indexSearch === -1 ? '' : url.slice(indexSearch);
+    const [, hash = '/'] = url.split('#');
 
     const routeName = routes.find(({ path }) => {
-        if (path === (pathname || '/')) return true;
-        if (pathname.startsWith(path)) {
-            const diff = pathname.replace(path, '');
-            return diff.length === 0 || diff.startsWith('/');
+        if (path.includes('/:'))
+            return match(path, hash).matches;
+        if (path === hash)
+            return true;
+        if (hash.startsWith(path)) {
+            const rest = hash.replace(path, '');
+            return rest.length === 0 || rest.startsWith('/');
         }
-
-        return undefined;
     });
 
     return {
-        pathname: pathname === '/' ? '' : pathname,
-        search,
+        pathname: hash,
         routeName: routeName?.name || '',
     };
 };
 
-const getRoute = () => `${window.location.pathname}${window.location.search}`;
+const getRoute = () => `${window.location.pathname}${window.location.hash}`;
 const initialLocation = getLocation(getRoute());
 
 export const RouterContext = createContext({
     ...initialLocation,
-    pushHistory: (pathname: string, search?: string) => {
+    pushHistory: (pathname: string) => {
         void pathname;
-        void search;
     },
 });
 
 export const RouterProvider = ({ children }: RouterProps) => {
-    const [location, setLocation] = useState(() => getLocation(getRoute()));
+    const [location, setLocation] = useState(initialLocation);
 
     const handleChangeHistory = useCallback(() => {
         const route = getRoute();
@@ -54,25 +56,18 @@ export const RouterProvider = ({ children }: RouterProps) => {
         setLocation(location);
     }, []);
 
-    window.addEventListener('popstate', handleChangeHistory);
+    window.addEventListener('hashchange', handleChangeHistory);
 
-    const pushHistory = (pathname: string, search = '') => {
-        const location = getLocation(`${pathname}${search}`);
-        const newLocation = `${basePath}${location.pathname}${location.search}`;
+    const pushHistory = (pathname: string) => {
+        const location = getLocation(pathname);
+        const newLocation = `${basePath}/#${location.pathname}`;
 
         setLocation(location);
         window.history.pushState(undefined, '', newLocation);
     };
 
-    useEffect(() => {
-        if (location.pathname === '/') return;
-        if (/\/+$/.test(location.pathname))
-            pushHistory(location.pathname.replace(/\/$/, ''));
-    }, [location.pathname]);
-
     const routing = {
         pathname: location.pathname,
-        search: location.search,
         routeName: location.routeName,
         pushHistory,
     };

@@ -16,12 +16,12 @@ export const Link = forwardRef(({ to, onClick, ...props }: LinkProps, ref: Forwa
         event.preventDefault();
 
         onClick?.(event);
-        pushHistory(to);
+        pushHistory(`/#${to}`);
     };
 
     return (
         <a
-            href={`${env.basePath}${to === '/' ? '' : to}`}
+            href={`${env.basePath}/#${to}`}
             onClick={handleClick}
             ref={ref}
             {...props}
