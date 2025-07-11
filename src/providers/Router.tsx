@@ -59,7 +59,7 @@ export const RouterProvider = ({ children }: RouterProps) => {
     window.addEventListener('hashchange', handleChangeHistory);
 
     const pushHistory = (pathname: string) => {
-        const location = getLocation(pathname);
+        const location = getLocation(`#${pathname}`);
         const newLocation = `${basePath}/#${location.pathname}`;
 
         setLocation(location);

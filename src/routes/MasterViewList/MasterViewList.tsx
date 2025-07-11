@@ -49,7 +49,7 @@ const getColumns = (
         const masterView = row.original;
 
         const handleEditMasterView = () => {
-            pushHistory(`#/${masterView.id}/edit`);
+            pushHistory(`/${masterView.id}/edit`);
         };
 
         const handleShowConfirmMasterViewDeleting = () => {
@@ -115,7 +115,7 @@ export const MasterViewList = () => {
     }, [masterViews, searchInput, searchDate]);
 
     const handleCreateMasterView = () => {
-        pushHistory('#/create');
+        pushHistory('/create');
     };
 
     const handleDeleteMasterView = (id: MasterView['id']) => {
