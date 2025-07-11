@@ -33,7 +33,7 @@ export default defineConfig(({ command }) => {
     }
 
     return {
-        base: '/mdm',
+        base: '/mdm-web',
         plugins,
         build: {
             sourcemap: true,
